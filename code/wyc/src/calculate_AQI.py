@@ -84,12 +84,12 @@ def calculate_AQI(raw, dict_range):
     BPl = BPl.apply(pd.to_numeric)
     for key in dict_range:
         IAQI[key] = (IAQIh[key] - IAQIl[key]) / (BPh[key] - BPl[key]) * (data[key] - BPl[key]) + IAQIl[key]
-    data['IAQ'] = np.ceil(IAQI.max(axis=1))
+    data['AQI'] = np.ceil(IAQI.max(axis=1))
     # 取最大值时有一项为 NA 则整体为 NA
-    data.loc[IAQI.isna().any(axis=1), 'IAQ'] = np.nan
+    data.loc[IAQI.isna().any(axis=1), 'AQI'] = np.nan
     # 小于等于 50 无首要污染物
     data['element'] = np.nan
-    data.loc[data['IAQ'] > 50, 'element'] = IAQI.idxmax(axis=1)
+    data.loc[data['AQI'] > 50, 'element'] = IAQI.idxmax(axis=1)
     # ------------> output
     print('已经在原数据集的基础上添加两列，注意：\n 空气质量爆表或观测缺失都会导致 NA \n 取最大值时有一项为 NA 则整体为 NA \n 小于等于 50 无首要污染物')
     return data
